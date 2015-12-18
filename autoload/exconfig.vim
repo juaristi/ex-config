@@ -446,8 +446,18 @@ function exconfig#gen_sh_update_files(path)
                     \ 'export TMP="${DEST}/_files"'                ,
                     \ 'export TARGET="${DEST}/files"'              ,
                     \ 'export ID_TARGET="${DEST}/idutils-files"'   ,
-                    \ 'sh ${TOOLS}/shell/bash/update-filelist.sh'  ,
                     \ ]
+
+        " Scan for additional source folders and append them to the file list.
+        let additional_source_folders = vimentry#get('additional_source_folders', [])
+        if !empty(additional_source_folders)
+            call extend(scripts, [
+                    \ 'export ADDITIONAL_FOLDERS="'        .
+                    \ join(additional_source_folders, ',') .
+                    \ '"'])
+        endif
+
+        call extend(scripts, ['sh ${TOOLS}/shell/bash/update-filelist.sh'])
     endif
 
     " save to file
